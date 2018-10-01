@@ -5,6 +5,7 @@ defmodule Example.Tasks.Migrate do
     # Configure
     Mix.Releases.Config.Providers.Elixir.init(["${RELEASE_ROOT_DIR}/etc/config.exs"])
     repo_config = Application.get_env(:distillery_example, Example.Repo)
+    IO.inspect {:repo_config, repo_config}
     repo_config = Keyword.put(repo_config, :adapter, Ecto.Adapters.Postgres)
     Application.put_env(:distillery_example, Example.Repo, repo_config)
 
