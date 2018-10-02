@@ -7,7 +7,7 @@ if [ ! -z "$BUILD_DIR" ]; then
 fi
 
 ERL_VERSION="21.0"
-ELIXIR_VERSION="1.7.1"
+ELIXIR_VERSION="1.7.3"
 
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US
@@ -81,9 +81,14 @@ case $1 in
     install)
         do_install
         ;;
-    all)
+    all_old)
         do_install && \
           do_pre_build && \
+          do_build && \
+          do_post_build
+        ;;
+    all)
+        do_pre_build && \
           do_build && \
           do_post_build
         ;;

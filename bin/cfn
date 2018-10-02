@@ -4,8 +4,8 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
 
-STACK_NAME="${STACK_NAME:-distillery-aws-example}"
-APP_NAME="${APP_NAME:-distillery-aws-example}"
+STACK_NAME="${STACK_NAME:-chalcal-test-example}"
+APP_NAME="${APP_NAME:-chalcal-test-example}"
 GITHUB_TOKEN="$(cat "${SCRIPT_DIR}/../GITHUB_TOKEN" || "")"
 
 GIT_URL="$(grep 'url' .git/config | awk '{ print $3 }')"
