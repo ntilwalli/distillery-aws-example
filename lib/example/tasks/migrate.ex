@@ -8,7 +8,7 @@ defmodule Example.Tasks.Migrate do
     username = Keyword.get(repo_config, :username)
     hostname = Keyword.get(repo_config, :hostname)
     password = Keyword.get(repo_config, :password)
-    database = Keyword.get(repo_config, :database)}
+    database = Keyword.get(repo_config, :database)
     repo_config = Keyword.put(repo_config, :adapter, Ecto.Adapters.Postgres)
     Application.put_env(:distillery_example, Example.Repo, repo_config)
 

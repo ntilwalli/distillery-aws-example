@@ -4,8 +4,8 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
 
-STACK_NAME="${STACK_NAME:-chalcal-test-example}"
-APP_NAME="${APP_NAME:-chalcal-test-example}"
+STACK_NAME="${STACK_NAME:-chalcal-test-image-example}"
+APP_NAME="${APP_NAME:-chalcal-test-image-example}"
 GITHUB_TOKEN="$(cat "${SCRIPT_DIR}/../GITHUB_TOKEN" || "")"
 
 GIT_URL="$(grep 'url' .git/config | awk '{ print $3 }')"
@@ -113,7 +113,7 @@ function tail_stack() {
     local previous
     until echo "$current" | tail -1 | grep -E -q "${stack}.*_(COMPLETE|FAILED)"
     do
-        if ! output=$(stack-events "${stack}"); then
+        if ! output=$(stack_events "${stack}"); then
             # Something went wrong with stack-events (like stack not known)
             return 1
         fi

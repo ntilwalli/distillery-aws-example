@@ -15,34 +15,47 @@ export LC_ALL=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 
 function do_install(){
-    mkdir -p /tmp
 
-    echo "==> Installing wget, unzip, make"
-    yum install -y -q wget unzip make
+    mkdir -p /tmp;
 
-    echo "==> Installing EPEL repository"
-    wget --no-verbose -P /tmp https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-    yum install -q -y /tmp/epel-release-latest-7.noarch.rpm
+    echo "==> Installing gcc, wget, unzip, make..."; 
+    yum install -y -q gcc wget unzip make; 
 
-    echo "==> Updating package repos"
-    yum update -y -q
+    echo "==> Installing EPEL repository"; 
+    wget --no-verbose -P /tmp https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm; \
+    yum install -q -y /tmp/epel-release-latest-7.noarch.rpm;
 
-    echo "==> Updating system packages"
-    yum upgrade -y -q --enablerepo=epel
+    echo "==> Updating package repos"; 
+    yum update -y -q;
 
-    echo "==> Installing wxGTK-devel (erlang dep)"
-    yum install -y -q wxGTK-devel || exit 1
+    echo "==> Updating system packages"; 
+    yum upgrade -y -q --enablerepo=epel;
 
-    echo "==> Installing unixODBC-devel (erlang dep)"
-    yum install -y -q unixODBC-devel || exit 1
+    echo "==> Installing node"; 
+    yum install -y -q nodejs npm;
 
-    echo "==> Installing Erlang ${ERL_VERSION}.."
-    wget --no-verbose -P /tmp/ "https://packages.erlang-solutions.com/erlang/esl-erlang/FLAVOUR_1_general/esl-erlang_${ERL_VERSION}-1~centos~7_amd64.rpm"
-    rpm -Uvh "/tmp/esl-erlang_${ERL_VERSION}-1~centos~7_amd64.rpm"
+    echo "==> Installing imagemagick"; 
+    yum install -y -q ImageMagick ImageMagick-devel || exit 1;
 
-    echo "==> Installing Elixir ${ELIXIR_VERSION}"
-    wget --no-verbose -P /tmp/ "https://github.com/elixir-lang/elixir/releases/download/v${ELIXIR_VERSION}/Precompiled.zip"
-    unzip /tmp/Precompiled.zip -d /usr/local
+    echo "==> Installing psql"; 
+    yum install -y -q postgresql || exit 1;
+
+    echo "==> Installing sass"; 
+    npm install -g sass
+
+    echo "==> Installing wxGTK-devel (erlang dep)"; 
+    yum install -y -q wxGTK-devel || exit 1;
+
+    echo "==> Installing unixODBC-devel (erlang dep)"; 
+    yum install -y -q unixODBC-devel || exit 1;
+
+    echo "==> Installing Erlang ${ERL_VERSION}.."; 
+    wget --no-verbose -P /tmp/ "https://packages.erlang-solutions.com/erlang/esl-erlang/FLAVOUR_1_general/esl-erlang_${ERL_VERSION}-1~centos~7_amd64.rpm"; 
+    rpm -Uvh "/tmp/esl-erlang_${ERL_VERSION}-1~centos~7_amd64.rpm";
+
+    echo "==> Installing Elixir ${ELIXIR_VERSION}"; 
+    wget --no-verbose -P /tmp/ "https://github.com/elixir-lang/elixir/releases/download/v${ELIXIR_VERSION}/Precompiled.zip";
+    unzip /tmp/Precompiled.zip -d /usr/local;
 }
 
 function do_pre_build(){
@@ -81,14 +94,9 @@ case $1 in
     install)
         do_install
         ;;
-    all_old)
+    all)
         do_install && \
           do_pre_build && \
-          do_build && \
-          do_post_build
-        ;;
-    all)
-        do_pre_build && \
           do_build && \
           do_post_build
         ;;
