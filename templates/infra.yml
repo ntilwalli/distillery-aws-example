@@ -831,7 +831,7 @@ Resources:
       MasterUserPassword: !GetAtt SecretDatabasePassword.Value
       DBName: !Ref DatabaseName
       Engine: postgres
-      EngineVersion: 10.5
+      EngineVersion: 10.4
       LicenseModel: postgresql-license
       DBSubnetGroupName: !Ref DBSubnetGroup
       VPCSecurityGroups:
