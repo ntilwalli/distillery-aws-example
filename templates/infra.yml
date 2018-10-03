@@ -647,8 +647,8 @@ Resources:
   LoadBalancerHTTPSListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-        Certificate: 
-          CertificateArn: "arn:aws:acm:us-east-1:511255971614:certificate/9e7a4c66-2bfb-4f43-a5c1-991d9cacb430"
+        Certificates: 
+          - CertificateArn: "arn:aws:acm:us-east-1:511255971614:certificate/9e7a4c66-2bfb-4f43-a5c1-991d9cacb430"
         Port: 443
         Protocol: "HTTPS"
         DefaultActions:
