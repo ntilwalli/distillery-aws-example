@@ -625,6 +625,7 @@ Resources:
       DomainName: "thumbcal.com"
       SubjectAlternativeNames:
         - "*.thumbcal.com"
+      ValidationMethod: "DNS"
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
