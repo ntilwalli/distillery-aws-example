@@ -619,6 +619,13 @@ Resources:
         - Key: source
           Value: !Ref ApplicationName
   
+  SSLCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties: 
+      DomainName: "thumbcal.com"
+      SubjectAlternativeNames:
+        - "*.thumbcal.com"
+
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -659,7 +666,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
         Certificates: 
-          - CertificateArn: "arn:aws:acm:us-east-1:511255971614:certificate/9e7a4c66-2bfb-4f43-a5c1-991d9cacb430"
+          - CertificateArn: !Ref SSLCertificate
         Port: 443
         Protocol: "HTTPS"
         DefaultActions:
