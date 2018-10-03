@@ -644,6 +644,18 @@ Resources:
             TargetGroupArn: !Ref TargetGroup
         LoadBalancerArn: !Ref LoadBalancer
 
+  LoadBalancerHTTPSListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+        Certificate: 
+          CertificateArn: "arn:aws:acm:us-east-1:511255971614:certificate/9e7a4c66-2bfb-4f43-a5c1-991d9cacb430"
+        Port: 443
+        Protocol: "HTTPS"
+        DefaultActions:
+          - Type: "forward"
+            TargetGroupArn: !Ref TargetGroup
+        LoadBalancerArn: !Ref LoadBalancer
+
   # Autoscaling Group
   
   ASG:
