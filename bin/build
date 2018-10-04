@@ -100,6 +100,11 @@ case $1 in
           do_build && \
           do_post_build
         ;;
+    all_except_install)
+        do_pre_build && \
+          do_build && \
+          do_post_build
+        ;;
     *)
         echo "Invalid command $1"
         exit 1

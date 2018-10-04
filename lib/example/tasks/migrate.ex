@@ -1,20 +1,27 @@
 defmodule Example.Tasks.Migrate do
   @moduledoc false
+  @start_apps [
+    :crypto,
+    :ssl,
+    :postgrex,
+    :ecto
+  ]
 
   def migrate(_args) do
     # Configure
     Mix.Releases.Config.Providers.Elixir.init(["${RELEASE_ROOT_DIR}/etc/config.exs"])
     repo_config = Application.get_env(:distillery_example, Example.Repo)
-    username = Keyword.get(repo_config, :username)
     hostname = Keyword.get(repo_config, :hostname)
-    password = Keyword.get(repo_config, :password)
     database = Keyword.get(repo_config, :database)
+    username = Keyword.get(repo_config, :username)
+    password = Keyword.get(repo_config, :password)
+    IO.inspect {:migrate, hostname, database, username, password}
     repo_config = Keyword.put(repo_config, :adapter, Ecto.Adapters.Postgres)
     Application.put_env(:distillery_example, Example.Repo, repo_config)
 
     # Start requisite apps
     IO.puts "==> Starting applications.."
-    for app <- [:crypto, :ssl, :postgrex, :ecto] do
+    for app <- @start_apps do
       {:ok, res} = Application.ensure_all_started(app)
       IO.puts "==> Started #{app}: #{inspect res}"
     end
@@ -35,6 +42,9 @@ defmodule Example.Tasks.Migrate do
     else
       Ecto.Migrator.run(Example.Repo, migrations_dir, :up, opts)
     end
+
+    seed_app = Application.app_dir(:distillery_example, ["bin", "seed_zone_info"])
+    System.cmd(seed_app, [hostname, database, username, password])
 
     # Shut down
     :init.stop()

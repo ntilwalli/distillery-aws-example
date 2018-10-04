@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+DATABASE_HOSTNAME=$1
+DATABASE=$2
+DATABASE_USER=$3
+PGPASSWORD=$4
+DATABASE_PORT=5432
+TZ_DATASET=${TZ_DATASET:-2018d}
+
+TEMP_TO_NAME=temp_zoneinfo
+TO_NAME=zoneinfo
+
+ZONEINFO_EXISTS_RECORD=`PGPASSWORD=$PGPASSWORD psql --host ${DATABASE_HOSTNAME} -d ${DATABASE} -U ${DATABASE_USER} -p ${DATABASE_PORT} -P t -P format=unaligned -c "SELECT EXISTS ( \
+   SELECT 1 \
+   FROM   information_schema.tables \
+   WHERE  table_catalog = '${DATABASE}' \
+   AND    table_name = '${TO_NAME}' \
+);"`
+
+if [ "f" == $ZONEINFO_EXISTS_RECORD ]; then
+  # Pull data from https://github.com/evansiroky/timezone-boundary-builder
+  # https://github.com/evansiroky/timezone-boundary-builder/releases/download/2018d/timezones-with-oceans.shapefile.zip
+  DATABASE_URL=$DATABASE_USER@$DATABASE_HOSTNAME/$DATABASE
+  echo "Loading tz_data into database: $DATABASE_URL, directory: $TZ_DATASET"
+  ZIP_FILENAME=timezones-with-oceans.shapefile.zip
+  FROM_NAME=combined-shapefile-with-oceans
+
+  SHAPEFILE_URL=https://github.com/evansiroky/timezone-boundary-builder/releases/download/${TZ_DATASET}/${ZIP_FILENAME}
+  DATA_DIR=/tmp/${TZ_DATASET}
+  mkdir ${DATA_DIR}
+  TZ_ZIP_FILE=${DATA_DIR}/${ZIP_FILENAME}
+  echo "Downloading shapefiles..."
+  curl -L ${SHAPEFILE_URL} > ${TZ_ZIP_FILE}
+  echo "Unzipping shapefiles..."
+  unzip -o ${TZ_ZIP_FILE} -d ${DATA_DIR}
+
+  # DATABASE=spotlight_repo
+  # DATABASE_USER=spotlight
+
+  # psql -d ${DATABASE} -U ${DATABASE_USER} -c "DROP INDEX zoneinfo_geom_idx"
+  # echo "Unzipping..."
+  # unzip -o ${DATA_DIR}/timezones.shapefile.zip -d ${DATA_DIR}
+  echo "Renaming files to zoneinfo.* ..."
+  mv ${DATA_DIR}/dist/${FROM_NAME}.dbf ${DATA_DIR}/dist/${TEMP_TO_NAME}.dbf
+  mv ${DATA_DIR}/dist/${FROM_NAME}.prj ${DATA_DIR}/dist/${TEMP_TO_NAME}.prj
+  mv ${DATA_DIR}/dist/${FROM_NAME}.shp ${DATA_DIR}/dist/${TEMP_TO_NAME}.shp
+  mv ${DATA_DIR}/dist/${FROM_NAME}.shx ${DATA_DIR}/dist/${TEMP_TO_NAME}.shx
+  echo "Converting shapefile to pgsql file..."
+  shp2pgsql -d -s 4326 -I ${DATA_DIR}/dist/${TEMP_TO_NAME} > ${DATA_DIR}/dist/dump.sql
+  PGPASSWORD=$PGPASSWORD psql --host ${DATABASE_HOSTNAME} -d ${DATABASE} -U ${DATABASE_USER} -p ${DATABASE_PORT} -f ${DATA_DIR}/dist/dump.sql
+  PGPASSWORD=$PGPASSWORD psql --host ${DATABASE_HOSTNAME} -d ${DATABASE} -U ${DATABASE_USER} -p ${DATABASE_PORT} -c "SELECT EXISTS ( \
+    BEGIN;
+    DROP TABLE IF EXISTS ${TO_NAME};
+    ALTER_TABLE ${TEMP_TO_NAME} RENAME TO ${TO_NAME}
+    COMMIT;
+  );"
+
+  rm -rf ${DATA_DIR}
+
+fi
+
+
+
+
+
+#shp2pgsql -d -s 4326 -I ${DATA_DIR}/dist/zoneinfo | heroku pg:psql --app chalcal
+
+#shp2pgsql -d -s 4326 -I ${DATA_DIR}/dist/zoneinfo
+#heroku pg:psql --app chalcal -f ${DATA_DIR}/dist/dump.sql

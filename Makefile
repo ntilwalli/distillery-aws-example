@@ -22,7 +22,6 @@ clean: ## Clean up generated artifacts
 rebuild: clean build ## Rebuild the application
 
 image: ## Mimic CodeBuild build
-	# docker run --rm -e BUILD_DIR=/opt/app -v $(PWD):/opt/app -it centos:7 /opt/app/bin/build all
 		docker run --rm -e BUILD_DIR=/opt/app -v $(PWD):/opt/app -it centos:7 /opt/app/bin/build all
 
 release: ## Build a release of the application with MIX_ENV=prod

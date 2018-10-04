@@ -622,8 +622,9 @@ Resources:
   SSLCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties: 
-      DomainName: "thumbcal.com"
+      DomainName: "www.thumbcal.com"
       SubjectAlternativeNames:
+        - "thumbcal.com"
         - "*.thumbcal.com"
       ValidationMethod: "DNS"
 

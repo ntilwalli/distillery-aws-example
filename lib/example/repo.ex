@@ -8,8 +8,9 @@ defmodule Example.Repo do
   def init(_, opts) do
     opts =
       opts
-      |> Keyword.put(:url, System.get_env("DATABASE_URL"))
-      |> Keyword.put(:hostname, System.get_env("DATABASE_HOST"))
+      |> Keyword.put(:url, System.get_env("DATABASE_URL") || Keyword.get(opts, :url))
+      |> Keyword.put(:hostname, System.get_env("DATABASE_HOST") ||  Keyword.get(opts, :hostname))
+
     {:ok, opts}
   end
 end
