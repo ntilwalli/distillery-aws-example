@@ -28,6 +28,7 @@ artifacts:
     - bin/unpack
     - bin/stop
     - bin/migrate
+    - bin/seed_zone_info
     - bin/start
     - bin/healthz
   discard-paths: no

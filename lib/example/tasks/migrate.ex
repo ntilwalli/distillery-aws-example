@@ -15,7 +15,7 @@ defmodule Example.Tasks.Migrate do
     database = Keyword.get(repo_config, :database)
     username = Keyword.get(repo_config, :username)
     password = Keyword.get(repo_config, :password)
-    IO.inspect {:migrate, hostname, database, username, password}
+    # IO.inspect {:migrate, hostname, database, username, password}
     repo_config = Keyword.put(repo_config, :adapter, Ecto.Adapters.Postgres)
     Application.put_env(:distillery_example, Example.Repo, repo_config)
 
@@ -43,8 +43,10 @@ defmodule Example.Tasks.Migrate do
       Ecto.Migrator.run(Example.Repo, migrations_dir, :up, opts)
     end
 
-    seed_app = Application.app_dir(:distillery_example, ["bin", "seed_zone_info"])
-    System.cmd(seed_app, [hostname, database, username, password])
+    seed_app = Application.app_dir(:distillery_example)
+    command = Path.expand(Path.join([seed_app, "..", "..", "bin", "seed_zone_info"]))
+    IO.inspect {:load_command, command}
+    System.cmd(command, [hostname, database, username, password])
 
     # Shut down
     :init.stop()

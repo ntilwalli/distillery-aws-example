@@ -11,6 +11,7 @@ tar -xzf distillery_example.tar.gz
 rm distillery_example.tar.gz
 # Set permissions
 chown -R ec2-user:ec2-user /opt/app
+chmod +x bin/seed_zone_info
 
 # Set up systemd service if not already done
 __cwd="$(pwd)"
