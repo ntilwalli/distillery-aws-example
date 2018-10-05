@@ -814,12 +814,6 @@ Resources:
                 echo "LANGUAGE=en_US" >> /etc/environment
                 echo "LC_ALL=en_US.UTF-8" >> /etc/environment
                 echo "LC_CTYPE=en_US.UTF-8" >> /etc/environment
-            application-environment:
-              command: |
-                sudo amazon-linux-extras enable postgresql10;
-                sudo amazon-linux-extras enable GraphicsMagick1.3;
-                sudo yum -y install postgresql;
-                sudo yum -y install GraphicsMagick;
             set-permissions:
               command: |
                 chown -R ec2-user:ec2-user /opt/app

@@ -40,7 +40,7 @@ if [ "f" == $ZONEINFO_EXISTS_RECORD ]; then
   # psql -d ${DATABASE} -U ${DATABASE_USER} -c "DROP INDEX zoneinfo_geom_idx"
   # echo "Unzipping..."
   # unzip -o ${DATA_DIR}/timezones.shapefile.zip -d ${DATA_DIR}
-  echo "Renaming files to zoneinfo.* ..."
+  echo "Renaming files to temp_zoneinfo.* ..."
   mv ${DATA_DIR}/dist/${FROM_NAME}.dbf ${DATA_DIR}/dist/${TEMP_TO_NAME}.dbf
   mv ${DATA_DIR}/dist/${FROM_NAME}.prj ${DATA_DIR}/dist/${TEMP_TO_NAME}.prj
   mv ${DATA_DIR}/dist/${FROM_NAME}.shp ${DATA_DIR}/dist/${TEMP_TO_NAME}.shp
@@ -48,12 +48,12 @@ if [ "f" == $ZONEINFO_EXISTS_RECORD ]; then
   echo "Converting shapefile to pgsql file..."
   shp2pgsql -d -s 4326 -I ${DATA_DIR}/dist/${TEMP_TO_NAME} > ${DATA_DIR}/dist/dump.sql
   PGPASSWORD=$PGPASSWORD psql --host ${DATABASE_HOSTNAME} -d ${DATABASE} -U ${DATABASE_USER} -p ${DATABASE_PORT} -f ${DATA_DIR}/dist/dump.sql
-  PGPASSWORD=$PGPASSWORD psql --host ${DATABASE_HOSTNAME} -d ${DATABASE} -U ${DATABASE_USER} -p ${DATABASE_PORT} -c "SELECT EXISTS ( \
-    BEGIN;
-    DROP TABLE IF EXISTS ${TO_NAME};
-    ALTER_TABLE ${TEMP_TO_NAME} RENAME TO ${TO_NAME}
-    COMMIT;
-  );"
+  PGPASSWORD=$PGPASSWORD psql --host ${DATABASE_HOSTNAME} -d ${DATABASE} -U ${DATABASE_USER} -p ${DATABASE_PORT} -c "\
+    BEGIN; \
+    DROP TABLE IF EXISTS ${TO_NAME}; \
+    ALTER_TABLE ${TEMP_TO_NAME} RENAME TO ${TO_NAME}; \
+    COMMIT; \
+  "
 
   echo "Removing data directory..."
   rm -rf ${DATA_DIR}
