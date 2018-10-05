@@ -818,7 +818,7 @@ Resources:
               command: |
                 sudo amazon-linux-extras enable postgresql10;
                 sudo amazon-linux-extras enable GraphicsMagick1.3;
-                sudo yum -y install postgresq;
+                sudo yum -y install postgresql;
                 sudo yum -y install GraphicsMagick;
             set-permissions:
               command: |
