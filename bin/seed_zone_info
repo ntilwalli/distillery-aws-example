@@ -55,8 +55,14 @@ if [ "f" == $ZONEINFO_EXISTS_RECORD ]; then
     COMMIT;
   );"
 
+  echo "Removing data directory..."
   rm -rf ${DATA_DIR}
-
+  exit 0
+elif [ "t" == $ZONEINFO_EXISTS_RECORD ]; then
+  echo "Found zoneinfo data in database, skipping load...";
+  exit 0;
+else
+  exit 1;
 fi
 
 
