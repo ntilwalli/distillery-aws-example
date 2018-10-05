@@ -868,6 +868,7 @@ Resources:
       DBSubnetGroupName: !Ref DBSubnetGroup
       VPCSecurityGroups:
         - !Ref SecurityGroupDatabase
+      PubliclyAccessible: true
       Tags:
         - Key: workload-type
           Value: other
