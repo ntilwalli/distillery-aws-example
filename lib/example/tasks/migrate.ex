@@ -43,10 +43,10 @@ defmodule Example.Tasks.Migrate do
       Ecto.Migrator.run(Example.Repo, migrations_dir, :up, opts)
     end
 
-    seed_app = Application.app_dir(:distillery_example)
-    command = Path.expand(Path.join([seed_app, "..", "..", "bin", "seed_zone_info"]))
-    IO.inspect {:load_command, command}
-    System.cmd(command, [hostname, database, username, password])
+    # seed_app = Application.app_dir(:distillery_example)
+    # command = Path.expand(Path.join([seed_app, "..", "..", "bin", "seed_zone_info"]))
+    # IO.inspect {:load_command, command}
+    # System.cmd(command, [hostname, database, username, password])
 
     # Shut down
     :init.stop()

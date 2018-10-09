@@ -736,6 +736,8 @@ Resources:
             exit 1
           }
           yum update -y
+          amazon-linux-extras install epel
+          yum install -y ImageMagick
           yum install -y aws-cfn-bootstrap
           /opt/aws/bin/cfn-init -v --region ${AWS::Region} --stack ${AWS::StackId} --resource LaunchConfig
           /opt/aws/bin/cfn-hup || fail 'Failed to start cfn-hup'
